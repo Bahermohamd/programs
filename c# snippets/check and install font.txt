@@ -1,0 +1,56 @@
+[DllImport("gdi32.dll")]
+        private static extern int AddFontResource(string lpFileName);
+
+
+        public Form1()
+        {
+            check();
+            InitializeComponent();
+        }
+
+        private static void CopyFontToWindowsFontsDirectory(string fontFilePath)
+        {
+            string fontsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
+
+            File.Copy(fontFilePath, Path.Combine(fontsDirectory, Path.GetFileName(fontFilePath)), true);
+        }
+
+
+        bool is_installed()
+        {
+            using (InstalledFontCollection fontsCollection = new InstalledFontCollection())
+            {
+                return Convert.ToBoolean(fontsCollection.Families
+                    .Any(x => x.Name.Equals("Droid Arabic kufi", StringComparison.CurrentCultureIgnoreCase)).ToString());
+            }
+        }
+
+
+        void check()
+        {
+            if (!is_installed())
+            {
+                String[] fonts = { @"\الخط المستخدم\ArbFONTS-Droid Arabic Kufi Bold.ttf", @"\الخط المستخدم\ArbFONTS-Droid Arabic Kufi.ttf" }; 
+                string fontFilePath = Path.GetDirectoryName(Application.ExecutablePath);
+
+                foreach (var font in fonts)
+                {
+                    if (File.Exists(fontFilePath + font))
+                    {
+                        MessageBox.Show(fontFilePath + font);
+                        AddFontResource(fontFilePath + font);
+                        
+                        CopyFontToWindowsFontsDirectory(fontFilePath + font);
+                        MessageBox.Show("Font installed successfully.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Font file not found.");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("font is installed");
+            }
+        }

@@ -1,0 +1,16 @@
+USE [Sales_System]
+		GO
+			
+		EXEC sp_rename 'Users.Password', 'PasswordHashed1', 'COLUMN';
+
+		ALTER TABLE Users
+		ALTER COLUMN PasswordHashed1 nvarchar(MAX);
+
+		ALTER TABLE Users
+		ADD PasswordHashed2 nvarchar(MAX) NULL;
+
+		ALTER TABLE Users
+		ADD Email nvarchar(50) NULL;
+
+		ALTER TABLE Users
+		ADD Phone1 char(11) NULL;
